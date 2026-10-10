@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الألعاب التفاعلية 🕹️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Cairo', sans-serif; overflow-x: hidden; } 
+        
+        /* تأثير الزجاج المطور */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+        }
+
+        /* تأثير الفلاش التفاعلي للمؤشر */
+        #mouse-flash {
+            pointer-events: none;
+            position: fixed;
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, rgba(59, 130, 246, 0.1) 40%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: left 0.05s ease-out, top 0.05s ease-out;
+            z-index: 9999;
+        }
+
+        /* حركات الأيقونات والتكبير عند التمرير */
+        .interactive-icon {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-block;
+        }
+        .interactive-icon:hover {
+            transform: scale(1.35) rotate(8deg);
+            filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.7));
+        }
+
+        .game-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .game-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 30px -10px rgba(168, 85, 247, 0.3);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.05); }
+        }
+        .pulse-glow {
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col items-center justify-between p-4 relative selection:bg-yellow-400 selection:text-slate-950">
+
+    <!-- طبقة الفلاش التفاعلية للمؤشر -->
+    <div id="mouse-flash"></div>
+
+    <!-- الخلفية المضيئة -->
+    <div class="fixed top-10 left-10 w-80 h-80 bg-purple-600/20 rounded-full blur-[130px] pointer-events-none pulse-glow"></div>
+    <div class="fixed bottom-10 right-10 w-80 h-80 bg-cyan-600/20 rounded-full blur-[130px] pointer-events-none pulse-glow" style="animation-delay: 2s;"></div>
+
+    <!-- الهيدر الرئيسي للمنصة -->
+    <header class="w-full max-w-4xl flex justify-between items-center py-4 px-6 glass-card rounded-2xl mb-6 z-20">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showSection('hub-view')">
+            <span class="text-3xl interactive-icon">🕹️</span>
+            <div>
+                <h1 class="text-lg font-black bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">منصة VKONG للالعاب</h1>
+                <p class="text-[10px] text-slate-400">العاب تفاعلية وتحديات أونلاين</p>
+            </div>
+        </div>
+        <button onclick="showSection('hub-view')" class="text-xs bg-slate-800 hover:bg-slate-700 text-yellow-300 font-bold px-4 py-2 rounded-xl border border-slate-700 transition active:scale-95">
+            🏠 القائمة الرئيسية
+        </button>
+    </header>
+
+    <main class="w-full max-w-xl z-10 my-auto">
+        
+        <!-- ================= 0. الشاشة الرئيسية للمنصة (HUB) ================= -->
+        <div id="hub-view" class="space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-5xl interactive-icon cursor-pointer">🚀</span>
+                <h2 class="text-2xl font-black text-white">اختر لعبتك التفاعلية</h2>
+                <p class="text-xs text-slate-400">العب مباشرة أو أنشئ تحدياتك وشاركها مع أصدقائك</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <!-- اللعبة الأولى: تحدي الصداقة -->
+                <div onclick="showSection('creator-view')" class="game-card glass-card p-5 rounded-3xl cursor-pointer border border-yellow-500/30 flex items-center gap-4 relative overflow-hidden">
+                    <span class="absolute top-3 left-3 bg-yellow-400 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full">🔥 الأكثر شعبية</span>
+                    <span class="text-4xl p-3 bg-slate-900/80 rounded-2xl border border-slate-800 interactive-icon">🎮</span>
+                    <div>
+                        <h3 class="font-bold text-base text-yellow-300">تحدي تخمين الصداقة</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">اصنع أسئلتك المخصصة وأرسل الرابط لأصدقائك لمعرفة نسبة التوافق!</p>
+                    </div>
+                </div>
+
+                <!-- اللعبة الثانية: تخمين الرقم -->
+                <div onclick="initNumberGame()" class="game-card glass-card p-5 rounded-3xl cursor-pointer border border-cyan-500/30 flex items-center gap-4">
+                    <span class="text-4xl p-3 bg-slate-900/80 rounded-2xl border border-slate-800 interactive-icon">🔢</span>
+                    <div>
+                        <h3 class="font-bold text-base text-cyan-300">تحدي تخمين الرقم السري</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">لعبة سريعة: خمن الرقم الخفي بين 1 و 50 بأقل عدد محاولات!</p>
+                    </div>
+                </div>
+
+                <!-- لعبة قادمة قريباً -->
+                <div class="glass-card p-5 rounded-3xl opacity-60 flex items-center gap-4 border border-slate-800">
+                    <span class="text-4xl p-3 bg-slate-900/80 rounded-2xl border border-slate-800">🧩</span>
+                    <div>
+                        <h3 class="font-bold text-base text-slate-400">تحدي الألغاز السريعة</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">قادمة قريباً في التحديث القادم...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 1. لعبة تحدي الصداقة (المنشئ) ================= -->
+        <div id="creator-view" class="hidden glass-card p-6 sm:p-8 rounded-[2.5rem] space-y-5">
+            <div class="text-center mb-2">
+                <span class="text-4xl interactive-icon mb-1">🎮</span>
+                <h2 class="text-xl font-black text-yellow-400">تحدي معرفة الأصدقاء</h2>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+                <h3 class="text-xs font-bold text-cyan-300 uppercase">أدخل بياناتك وأضف الأسئلة:</h3>
+            </div>
+            
+            <div>
+                <label class="block text-xs text-slate-300 mb-1.5 font-medium">اسمك الكريم:</label>
+                <input type="text" id="creator-name" placeholder="مثال: محمد" class="w-full p-3.5 rounded-2xl bg-slate-900/90 border border-slate-700 focus:outline-none focus:border-yellow-400 text-sm">
+            </div>
+
+            <!-- تصنيفات القوالب الجاهزة -->
+            <div class="space-y-2">
+                <span class="text-xs text-slate-400 font-bold flex items-center gap-1.5">📦 القوالب الجاهزة:</span>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="loadTemplate('gaming')" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-500 text-xs font-bold text-purple-300 transition hover:scale-105 active:scale-95 flex flex-col items-center gap-1">
+                        <span class="text-base">🎮</span> الجيمز
+                    </button>
+                    <button onclick="loadTemplate('study')" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500 text-xs font-bold text-cyan-300 transition hover:scale-105 active:scale-95 flex flex-col items-center gap-1">
+                        <span class="text-base">📚</span> الدراسة
+                    </button>
+                    <button onclick="loadTemplate('lifestyle')" class="p-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-amber-500 text-xs font-bold text-amber-300 transition hover:scale-105 active:scale-95 flex flex-col items-center gap-1">
+                        <span class="text-base">☕</span> نمط الحياة
+                    </button>
+                </div>
+            </div>
+
+            <!-- قائمة الأسئلة المضافة -->
+            <div id="questions-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+
+            <!-- نموذج إضافة سؤال مخصص -->
+            <div class="p-4 bg-slate-900/60 rounded-2xl border border-slate-800 space-y-3">
+                <p class="font-bold text-xs text-yellow-300">✍️ إضافة سؤال مخصص:</p>
+                <input type="text" id="q-text" placeholder="اكتب السؤال هنا..." class="w-full p-3 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:outline-none focus:border-cyan-400">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="opt-1" placeholder="الإجابة الصحيحة" class="p-2.5 text-xs rounded-xl bg-slate-900 border border-emerald-500/50 focus:outline-none">
+                    <input type="text" id="opt-2" placeholder="خيار خطأ" class="p-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:outline-none">
+                </div>
+                
+                <div class="flex gap-2">
+                    <button onclick="addCustomQuestion()" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2.5 rounded-xl text-xs transition active:scale-95">
+                        ➕ إضافة السؤال
+                    </button>
+                    <button onclick="saveAsCustomTemplate()" class="bg-slate-800 hover:bg-slate-700 text-yellow-300 border border-slate-700 font-bold px-3 py-2.5 rounded-xl text-xs transition active:scale-95">
+                        💾 حفظ كقالب
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="publishQuiz()" class="w-full bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 font-black py-4 rounded-2xl transition shadow-xl text-sm">
+                🚀 توليد رابط التحدي الذكي
+            </button>
+        </div>
+
+        <!-- ================= 2. واجهة مشاركة الرابط ================= -->
+        <div id="share-view" class="hidden glass-card p-6 sm:p-8 rounded-[2.5rem] text-center space-y-4">
+            <div class="text-6xl interactive-icon">🎉</div>
+            <h2 class="text-lg font-bold text-emerald-400">رابط التحدي جاهز للإرسال!</h2>
+            <p class="text-xs text-slate-300">انسخ الرابط وارسله لأصدقائك في إنستغرام أو واتساب ليبدأ التخمين:</p>
+            
+            <input type="text" id="share-link-input" readonly class="w-full p-3.5 text-center text-[11px] rounded-2xl bg-slate-900 border border-slate-700 text-yellow-300 select-all font-mono">
+            
+            <button onclick="copyLink()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-2xl transition text-xs border border-slate-700">
+                📋 نسخ الرابط إلى الحافظة
+            </button>
+
+            <a id="whatsapp-btn" href="#" target="_blank" class="block w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-extrabold py-3.5 rounded-2xl transition shadow-lg text-sm">
+                📲 مشاركة مباشرة في واتساب
+            </a>
+            
+            <button onclick="showSection('hub-view')" class="text-xs text-slate-400 hover:text-white underline pt-2 block mx-auto">العودة للرئيسية 🏠</button>
+        </div>
+
+        <!-- ================= 3. واجهة حل اختبار الصداقة ================= -->
+        <div id="friend-view" class="hidden glass-card p-6 sm:p-8 rounded-[2.5rem] space-y-4">
+            <h2 class="text-sm font-semibold text-cyan-300 text-center" id="friend-title">اختبار الصداقة</h2>
+            
+            <div>
+                <label class="block text-xs text-slate-300 mb-1.5 font-medium">اكتب اسمك أيها الصديق:</label>
+                <input type="text" id="friend-name" placeholder="اسمك هنا..." class="w-full p-3.5 rounded-2xl bg-slate-900/90 border border-slate-700 focus:outline-none focus:border-yellow-400 text-sm">
+            </div>
+
+            <div id="friend-questions-container" class="space-y-3 pt-1 max-h-60 overflow-y-auto pr-1"></div>
+
+            <button onclick="submitFriendAnswers()" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black py-4 rounded-2xl transition shadow-xl text-sm">
+                🎯 إظهار نسبة التوافق الآن
+            </button>
+        </div>
+
+        <!-- ================= 4. واجهة النتيجة النهائية ================= -->
+        <div id="result-view" class="hidden glass-card p-6 sm:p-8 rounded-[2.5rem] text-center space-y-4">
+            <div class="text-5xl interactive-icon">🏆</div>
+            <h2 class="text-lg font-bold text-yellow-400">نتيجة التوافق والصداقة</h2>
+            <p id="result-summary" class="text-slate-200 text-xs leading-relaxed"></p>
+            
+            <div class="p-6 bg-slate-900/90 rounded-3xl border border-slate-800 shadow-inner">
+                <span class="block text-6xl font-black text-cyan-400 tracking-tight" id="result-percentage">0%</span>
+                <p id="result-msg" class="text-xs mt-2 font-semibold text-yellow-200"></p>
+            </div>
+
+            <div class="text-right space-y-2">
+                <p class="text-xs font-bold text-slate-300">📊 مراجعة الإجابات:</p>
+                <div id="answers-breakdown" class="space-y-1.5 max-h-36 overflow-y-auto text-xs pr-1"></div>
+            </div>
+
+            <button onclick="showSection('hub-view')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-2xl transition text-xs shadow-lg">
+                🏠 العودة للمنصة الرئيسية
+            </button>
+        </div>
+
+        <!-- ================= 5. واجهة لعبة الرقم السري ================= -->
+        <div id="number-game-view" class="hidden glass-card p-6 sm:p-8 rounded-[2.5rem] text-center space-y-5">
+            <span class="text-5xl interactive-icon">🔢</span>
+            <h2 class="text-xl font-bold text-cyan-300">تحدي تخمين الرقم السري</h2>
+            <p class="text-xs text-slate-300">لقد اخترت رقماً سرّياً بين <b>1</b> و <b>50</b>، حاول تخمينه في أقل عدد من المحاولات!</p>
+
+            <div class="space-y-3">
+                <input type="number" id="num-guess-input" min="1" max="50" placeholder="أدخل رقمك..." class="w-full p-3.5 text-center text-lg rounded-2xl bg-slate-900 border border-slate-700 text-yellow-300 focus:outline-none focus:border-cyan-400">
+                <button onclick="checkNumberGuess()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-2xl text-xs transition">
+                    💡 تخمين!
+                </button>
+            </div>
+
+            <p id="num-hint" class="text-xs font-bold text-yellow-300 min-h-[20px]"></p>
+            <p id="num-attempts" class="text-[11px] text-slate-400">عدد المحاولات: 0</p>
+
+            <button onclick="showSection('hub-view')" class="text-xs text-slate-400 hover:text-white underline pt-2 block mx-auto">← العودة للمنصة</button>
+        </div>
+
+    </main>
+
+    <footer class="w-full max-w-xl text-center py-4 text-xs text-slate-500 z-10">
+        منصة الألعاب الممتعة © 2026
+    </footer>
+
+    <script>
+        // حركة الفلاش التفاعلية للمؤشر
+        const flash = document.getElementById('mouse-flash');
+        window.addEventListener('mousemove', (e) => {
+            flash.style.left = e.clientX + 'px';
+            flash.style.top = e.clientY + 'px';
+        });
+
+        // إدارة إظهار الأقسام
+        function showSection(sectionId) {
+            const sections = ['hub-view', 'creator-view', 'share-view', 'friend-view', 'result-view', 'number-game-view'];
+            sections.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        let createdQuestions = [];
+        let loadedQuizData = null;
+
+        const templates = {
+            gaming: [
+                { question: "ما هي منصة اللعب المفضلة لديك؟", options: ["PC / الكمبيوتر 💻", "Console / بلايستيشن 🎮"], answer: "PC / الكمبيوتر 💻" },
+                { question: "ما هو نمط الألعاب المفضل؟", options: ["ألعاب القصة والعالم المفتوح 🗡️", "ألعاب الشوتر والأونلاين 🎯"], answer: "ألعاب القصة والعالم المفتوح 🗡️" }
+            ],
+            study: [
+                { question: "ما هو الوقت المفضل للمذاكرة؟", options: ["الليل والهدوء 🌙", "الصباح الباكر ☀️"], answer: "الليل والهدوء 🌙" },
+                { question: "بيئة المذاكرة المفضلة؟", options: ["في الغرفة بهدوء 🎧", "مع الأصدقاء/مقهى ☕"], answer: "في الغرفة بهدوء 🎧" }
+            ],
+            lifestyle: [
+                { question: "ماذا تفضل لمشروبك؟", options: ["القهوة ☕", "الشاي 🍵"], answer: "القهوة ☕" },
+                { question: "فصل السنة المفضل؟", options: ["الشتاء ❄️", "الصيف ☀️"], answer: "الشتاء ❄️" }
+            ]
+        };
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedData = urlParams.get('data');
+
+            if (encodedData) {
+                try {
+                    const jsonString = decodeURIComponent(escape(atob(encodedData)));
+                    loadedQuizData = JSON.parse(jsonString);
+                    initFriendView();
+                } catch (e) {
+                    alert('الرابط تالف أو غير صالح!');
+                }
+            }
+        };
+
+        function loadTemplate(type) {
+            if (templates[type]) {
+                createdQuestions = [...createdQuestions, ...templates[type]];
+                renderQuestionsList();
+            }
+        }
+
+        function addCustomQuestion() {
+            const q = document.getElementById('q-text').value.trim();
+            const opt1 = document.getElementById('opt-1').value.trim();
+            const opt2 = document.getElementById('opt-2').value.trim();
+
+            if (!q || !opt1 || !opt2) {
+                alert('يرجى ملء تفاصيل السؤال والخيارات أولاً!');
+                return;
+            }
+
+            createdQuestions.push({ question: q, options: [opt1, opt2], answer: opt1 });
+
+            document.getElementById('q-text').value = '';
+            document.getElementById('opt-1').value = '';
+            document.getElementById('opt-2').value = '';
+
+            renderQuestionsList();
+        }
+
+        function saveAsCustomTemplate() {
+            if (createdQuestions.length === 0) return alert('أضف أسئلة أولاً لحفظها كقالب!');
+            localStorage.setItem('myCustomTemplate', JSON.stringify(createdQuestions));
+            alert('تم حفظ الأسئلة الحالية كقالب مخصص بنجاح! 💾');
+        }
+
+        function renderQuestionsList() {
+            const list = document.getElementById('questions-list');
+            if (createdQuestions.length === 0) {
+                list.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">لا توجد أسئلة مضافة بعد...</p>';
+                return;
+            }
+            list.innerHTML = createdQuestions.map((q, i) => `
+                <div class="p-3 bg-slate-900/70 rounded-2xl text-xs flex justify-between items-center border border-slate-800">
+                    <div>
+                        <span class="font-bold text-yellow-300">❓ ${i+1}. ${q.question}</span>
+                        <span class="block text-slate-400 mt-0.5">الإجابة: ${q.answer}</span>
+                    </div>
+                    <button onclick="removeQuestion(${i})" class="text-red-400 font-bold px-2.5 py-1 rounded-lg bg-red-500/10 active:scale-95">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function removeQuestion(index) {
+            createdQuestions.splice(index, 1);
+            renderQuestionsList();
+        }
+
+        function publishQuiz() {
+            const name = document.getElementById('creator-name').value.trim();
+            if (!name) return alert('الرجاء إدخال اسمك أولاً!');
+            if (createdQuestions.length === 0) return alert('الرجاء إضافة سؤال واحد على الأقل!');
+
+            const quizData = { creator: name, questions: createdQuestions };
+            const jsonString = JSON.stringify(quizData);
+            const encodedData = btoa(unescape(encodeURIComponent(jsonString)));
+
+            const baseUrl = window.location.href.split('?')[0];
+            const shareUrl = `${baseUrl}?data=${encodedData}`;
+
+            document.getElementById('share-link-input').value = shareUrl;
+            
+            const waText = encodeURIComponent(`🔥 خمن تفضيلاتي واعرف نسبة صداقتنا بدقة من خلال هذا التحدي:\n${shareUrl}`);
+            document.getElementById('whatsapp-btn').href = `https://wa.me/?text=${waText}`;
+
+            showSection('share-view');
+        }
+
+        function initFriendView() {
+            showSection('friend-view');
+            document.getElementById('friend-title').innerText = `تحدي معرفة تفضيلات: ${loadedQuizData.creator}`;
+            
+            const container = document.getElementById('friend-questions-container');
+            container.innerHTML = loadedQuizData.questions.map((q, i) => {
+                const shuffledOpts = [...q.options].sort(() => Math.random() - 0.5);
+                return `
+                    <div class="p-3.5 bg-slate-900/70 rounded-2xl border border-slate-800">
+                        <p class="font-medium text-xs mb-2 text-yellow-200">${i+1}. ${q.question}</p>
+                        <select class="friend-choice w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white" data-index="${i}">
+                            ${shuffledOpts.map(o => `<option value="${o}">${o}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function submitFriendAnswers() {
+            const friendName = document.getElementById('friend-name').value.trim();
+            if (!friendName) return alert('يرجى إدخال اسمك أولاً!');
+
+            const selects = document.querySelectorAll('.friend-choice');
+            let correct = 0;
+            let breakdownHtml = '';
+
+            selects.forEach((select, i) => {
+                const chosen = select.value;
+                const correctAns = loadedQuizData.questions[i].answer;
+                const isCorrect = chosen === correctAns;
+
+                if (isCorrect) correct++;
+
+                breakdownHtml += `
+                    <div class="p-2.5 rounded-xl bg-slate-900/80 border ${isCorrect ? 'border-emerald-500/40 text-emerald-300' : 'border-red-500/40 text-red-300'} flex justify-between items-center">
+                        <span><b>${i+1}.</b> ${loadedQuizData.questions[i].question}</span>
+                        <span class="font-bold">${isCorrect ? '✅ صح' : '❌ خطأ'}</span>
+                    </div>
+                `;
+            });
+
+            const total = selects.length;
+            const percent = Math.round((correct / total) * 100);
+
+            showSection('result-view');
+
+            document.getElementById('result-summary').innerHTML = `أهلاً <b>${friendName}</b>، لقد خمنت إجابات <b>${loadedQuizData.creator}</b> وأصبت في <b>${correct}</b> من أصل <b>${total}</b> أسئلة.`;
+            document.getElementById('result-percentage').innerText = percent + '%';
+            document.getElementById('answers-breakdown').innerHTML = breakdownHtml;
+
+            let msg = '';
+            if (percent === 100) msg = '🔥 مذهل! أنتم توأم روح وتعرفون بعضكم تماماً!';
+            else if (percent >= 50) msg = '🤝 صداقة ممتازة ورائعة، تعرفون بعضكم جيداً!';
+            else msg = '😅 يبدو أنكم بحاجة لقضاء وقت أطول معاً لتعرفوا أسرار بعضكم!';
+
+            document.getElementById('result-msg').innerText = msg;
+        }
+
+        function copyLink() {
+            const input = document.getElementById('share-link-input');
+            input.select();
+            document.execCommand('copy');
+            alert('تم نسخ الرابط بنجاح! شاركه الآن في إنستغرام أو واتساب.');
+        }
+
+        // --- لعبة الرقم السري الفرعية ---
+        let secretNum = 0;
+        let attemptsCount = 0;
+
+        function initNumberGame() {
+            secretNum = Math.floor(Math.random() * 50) + 1;
+            attemptsCount = 0;
+            document.getElementById('num-guess-input').value = '';
+            document.getElementById('num-hint').innerText = '';
+            document.getElementById('num-attempts').innerText = 'عدد المحاولات: 0';
+            showSection('number-game-view');
+        }
+
+        function checkNumberGuess() {
+            const val = parseInt(document.getElementById('num-guess-input').value);
+            if (!val) return;
+
+            attemptsCount++;
+            document.getElementById('num-attempts').innerText = `عدد المحاولات: ${attemptsCount}`;
+
+            const hint = document.getElementById('num-hint');
+            if (val === secretNum) {
+                hint.innerText = `🎉 ممتاز! تخمين صحيح خلال ${attemptsCount} محاولات!`;
+            } else if (val < secretNum) {
+                hint.innerText = '📈 الرقم السري أكبر من هذا الرقم!';
+            } else {
+                hint.innerText = '📉 الرقم السري أصغر من هذا الرقم!';
+            }
+        }
+    </script>
+</body>
+</html>
